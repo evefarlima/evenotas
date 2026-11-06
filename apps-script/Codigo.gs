@@ -26,8 +26,8 @@ var TIPOS = {
   },
   tag: {
     aba: 'Tags',
-    campos: ['id', 'name', 'color', 'updated', 'deleted', 'rev'],
-    titulos: ['ID', 'Nome', 'Cor', 'Atualizada', 'Excluída', 'Revisão']
+    campos: ['id', 'name', 'color', 'updated', 'deleted', 'rev', 'order'],
+    titulos: ['ID', 'Nome', 'Cor', 'Atualizada', 'Excluída', 'Revisão', 'Ordem']
   }
 };
 var NUMEROS = ['order', 'created', 'updated', 'deletedAt', 'rev'];
@@ -67,6 +67,8 @@ function aba(t) {
     sh = ss.insertSheet(t.aba);
     sh.getRange(1, 1, 1, t.titulos.length).setValues([t.titulos]).setFontWeight('bold');
     sh.setFrozenRows(1);
+  } else if (sh.getLastColumn() < t.titulos.length) {
+    sh.getRange(1, 1, 1, t.titulos.length).setValues([t.titulos]).setFontWeight('bold');
   }
   return sh;
 }

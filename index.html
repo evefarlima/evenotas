@@ -1048,7 +1048,13 @@ setupSideDrag();
   if(m){try{const u=atob(decodeURIComponent(m[1]));if(!cfg.url)$('#suUrl').value=u}catch(e){}history.replaceState(null,'',location.pathname)}
   if(!cfg.url||!cfg.key)showSetup();
   else sync();
-  if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+  if('serviceWorker' in navigator&&location.protocol==='https:'){
+    const had=!!navigator.serviceWorker.controller;let reloaded=false;
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!reloaded&&!cur){reloaded=true;commit();saveNow();setTimeout(()=>location.reload(),150)}});
+    navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>{
+      document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reg.update().catch(()=>{})});
+    }).catch(()=>{});
+  }
 })();
 </script>
 </body>

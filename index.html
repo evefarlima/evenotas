@@ -784,7 +784,16 @@ function setupReorder(C,dirty){
     const chk=li.parentElement.classList.contains('check');x.hidden=!chk||!!drag;if(chk){x.style.top=(p.top+(lh-26)/2)+'px';x.style.left=(lp.left+lp.width-26)+'px'}
   }
   const liAt=n=>{const e=n&&(n.nodeType===1?n:n.parentElement);return e&&e.closest?e.closest('li'):null};
-  C.addEventListener('mousemove',e=>{if(!drag)place(liAt(e.target))});
+  body.addEventListener('mousemove',e=>{
+    if(drag||e.target.closest('.lihandle,.lix'))return;
+    const t=C.contains(e.target)?liAt(e.target):null;
+    if(t){place(t);return}
+    // entre o item e a alça: mantém enquanto o mouse estiver na mesma altura do item
+    if(li){const r=li.getBoundingClientRect();if(e.clientY>=r.top-4&&e.clientY<=r.bottom+4)return}
+    // procura um item na mesma altura (ex.: mouse na margem esquerda)
+    const hit=[...C.querySelectorAll('li')].find(x=>{const r=x.getBoundingClientRect();return e.clientY>=r.top&&e.clientY<=r.bottom&&![...x.querySelectorAll('li')].some(y=>{const q=y.getBoundingClientRect();return e.clientY>=q.top&&e.clientY<=q.bottom})});
+    place(hit||null);
+  });
   body.addEventListener('mouseleave',()=>{if(!drag){h.hidden=true;x.hidden=true}});
   const onSel=()=>{if(drag)return;const s=getSelection();if(s.rangeCount&&C.contains(s.anchorNode))place(liAt(s.anchorNode))};
   document.addEventListener('selectionchange',onSel);

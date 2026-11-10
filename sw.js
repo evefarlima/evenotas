@@ -1,6 +1,6 @@
 // Guarda o app no aparelho para funcionar sem internet.
 // Com internet, sempre busca a versão mais nova primeiro.
-const CACHE = 'notas-v8';
+const CACHE = 'notas-v9';
 const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL.map(u => new Request(u, { cache: 'reload' })))));
